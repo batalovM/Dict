@@ -1,0 +1,44 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:viewModels2="clr-namespace:Dict.ViewModels"
+        mc:Ignorable="d" d:DesignWidth="600" d:DesignHeight="450"
+        Height="450"
+        Width="600"
+        WindowStartupLocation="CenterScreen"
+        CanResize="False"
+        x:Class="Dict.Views.MainWindow"
+        x:DataType="viewModels2:MainWindowViewModel"
+        Icon="/Assets/free-icon-dictionary-7861765.png"
+        Title="Словарь терминов">
+    <Design.DataContext>
+        <viewModels2:MainWindowViewModel/>
+    </Design.DataContext>
+    <Grid RowDefinitions="30, *">
+            <DockPanel Grid.Row="0">
+                <Menu DockPanel.Dock="Top">
+                    <MenuItem Header="Словари" Name="YourMenu">
+                    </MenuItem>
+                    <MenuItem Header="Справка">
+                        <MenuItem Header="Как пользоваться" Name="FAQ"/>
+                    </MenuItem>
+                </Menu>
+                <TextBlock/>
+            </DockPanel>
+        <Grid Grid.Row="1" ColumnDefinitions="200, *">
+            <ListBox Grid.Column="0" Width="200" HorizontalAlignment="Left" Name="WordListBox"/>
+            <Grid Grid.Column="1" ColumnDefinitions="*, *" Margin="5">
+                <TextBox Grid.Column="0" Name="Termin" Watermark="Термин" Width="150" HorizontalAlignment="Left" VerticalAlignment="Top"></TextBox>
+                <TextBox Grid.Column="0" Name="Description" TextWrapping="Wrap"  Watermark="Описание" Width="150" HorizontalAlignment="Left" Height="200" VerticalAlignment="Top" Margin="0,50,0,0"></TextBox>
+                <Button Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Top" Height="40"  Background="CornflowerBlue">
+                    <Image Source="../Assets/free-icon-search-4024513.png"></Image>
+                </Button>
+                <Button Grid.Column="1" Content="Добавить термин" Name="AddTerminButton" HorizontalAlignment="Right" VerticalAlignment="Top"  Background="CornflowerBlue"></Button>
+                <Button Grid.Column="1" Content="Удалить термин" Name="DeleteButton" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0, 50, 0, 0" Background="CornflowerBlue"/>
+                <Button Grid.Column="1" Content="Сохранить словарь" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0, 100, 0, 0" Background="CornflowerBlue"/>
+            </Grid>
+        </Grid>
+    </Grid>
+</Window>
+

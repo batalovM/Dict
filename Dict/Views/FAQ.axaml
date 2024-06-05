@@ -1,0 +1,20 @@
+﻿<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="450" d:DesignHeight="150"
+        x:Class="Dict.Views.FAQ"
+        Height="150"
+        Width="450"
+        CanResize="False"
+        Icon="/Assets/free-icon-dictionary-7861765.png"
+        WindowStartupLocation="CenterScreen"
+        Title="Справка">
+    <Grid Margin="5" RowDefinitions="*, *, *">
+        <TextBlock Grid.Row="0">О том как пользоваться словарем:</TextBlock>
+        <TextBlock Grid.Row="1">Вы можете выбрать словарь и просматривать его содержимое</TextBlock>
+        <TextBlock Grid.Row="2">Вы можете добавить, удалить, найти и сохранить термин</TextBlock>
+    </Grid>
+        
+        
+</Window>
