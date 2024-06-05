@@ -1,32 +1,119 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using System.Security.Cryptography;
 using System.Text;
 using Avalonia.Controls;
 using Dict.Models;
+
+
 namespace Dict.Views;
 
 public partial class MainWindow : Window
 {
     private List<DictionaryOfTerms> _dictionaries = new();
+    static void WriteWordsToBinaryFile(string[] words, string fileName)
+    {
+        using (BinaryWriter writer = new BinaryWriter(File.Open(fileName, FileMode.Create)))
+        {
+            foreach (string word in words)
+            {
+                byte[] wordBytes = Encoding.UTF8.GetBytes(word); // Преобразование слова в байты с использованием UTF-8
+                writer.Write(wordBytes); // Запись самого слова в бинарном формате
+            }
+        }
+    }
+    static string[] ReadWordsFromBinaryFile(string filePath)
+    {
+        string[] words;
+        using (FileStream fileStream = new FileStream(filePath, FileMode.Open))
+        {
+            using (BinaryReader binaryReader = new BinaryReader(fileStream))
+            {
+                long length = fileStream.Length;
+                byte[] buffer = new byte[length];
+                binaryReader.Read(buffer, 0, buffer.Length);
+
+                string data = System.Text.Encoding.UTF8.GetString(buffer);
+               // words = data.Split(new char[] { '\0' }, StringSplitOptions.RemoveEmptyEntries);
+               words = data.Split(' ');
+            }
+        }
+
+        return words;
+    }
+    static int StringHashCode40(string value)
+    {
+        int num = 5381;
+        int num2 = num;
+        for (int i = 0; i < value.Length; i += 2)
+        {
+            num = (((num << 5) + num) ^ value[i]);
+
+            if (i + 1 < value.Length)
+                num2 = (((num2 << 5) + num2) ^ value[i + 1]);
+        }
+        return Math.Abs(num + num2 * 1566083941);
+    }
+    static string[] ReadWordsFromBinaryFileForDescription(string filePath, string[] terms)
+    {
+        List<string> listOfDescription = new ();
+        foreach (var term in terms)
+        {
+            var hash = StringHashCode40(term);
+            char endChar = '#';
+            var arr = new char[100];
+            using (StreamReader reader = new StreamReader(filePath))
+            {
+                reader.BaseStream.Seek(hash, SeekOrigin.Begin); // устанавливаем позицию чтения
+
+                int i = 0;
+                int currentChar;
+                do
+                {
+                    currentChar = reader.Read();
+                    if (currentChar != -1 && currentChar != endChar)
+                    {
+                        char character = (char)currentChar;
+                        arr[i] = character;
+                        i++;
+                    }
+                } while (currentChar != -1 && currentChar != endChar && i < arr.Length);
+            }
+            var s = new string(arr).Trim('\0');
+            listOfDescription.Add(s);
+        }
+
+        return listOfDescription.ToArray();
+    }
     public MainWindow()
     {
         
         InitializeComponent();
         DictionaryOfTerms dict = new DictionaryOfTerms("Фрукты");
-        dict.AddTermLinkPair("яблоко", "яблоко1");
-        dict.AddTermLinkPair("банан", "банан2");
-        dict.AddTermLinkPair("апельсин", "апельсин3");
-        dict.AddTermLinkPair("лимон", "лимон4");
-        dict.SaveDescriptionToBinaryFile("description.bin", "яблоко1#", dict.StringHashCode40("яблоко"));
-        dict.SaveDescriptionToBinaryFile("description.bin", "банан2#", dict.StringHashCode40("банан"));
-        dict.SaveDescriptionToBinaryFile("description.bin", "апельсин2#", dict.StringHashCode40("апельсин"));
-        dict.SaveDescriptionToBinaryFile("description.bin", "лимон2#", dict.StringHashCode40("лимон"));
-        dict.SaveToBinaryFile("terms.bin");
+        string[] names = { dict.Name+'#' };
+        WriteWordsToBinaryFile(names, "Словари.bin");
+        // dict.AddTermLinkPair("яблоко", "яблоко1");
+        // dict.AddTermLinkPair("банан", "банан2");
+        // dict.AddTermLinkPair("апельсин", "апельсин3");
+        // dict.AddTermLinkPair("лимон", "лимон4");
+        // dict.SaveDescriptionToBinaryFile($"{dict.Name}description.bin", "яблоко1#", dict.StringHashCode40("яблоко"));
+        // dict.SaveDescriptionToBinaryFile($"{dict.Name}description.bin", "банан2#", dict.StringHashCode40("банан"));
+        // dict.SaveDescriptionToBinaryFile($"{dict.Name}description.bin", "апельсин2#", dict.StringHashCode40("апельсин"));
+        // dict.SaveDescriptionToBinaryFile($"{dict.Name}description.bin", "лимон2#", dict.StringHashCode40("лимон"));
+        // dict.SaveToBinaryFile($"{dict.Name}terms.bin");
+        // _dictionaries.Add(dict);
+        string[] terms = ReadWordsFromBinaryFile("Фруктыterms.bin");
+        string[] descriptions = ReadWordsFromBinaryFileForDescription("Фруктыdescription.bin", terms);
+        foreach (var VARIABLE in terms)
+        {
+            Console.Write($"{VARIABLE} ");
+        }
+        foreach (var VARIABLE in descriptions)
+        {
+            Console.Write($"{VARIABLE} " );
+        }
         _dictionaries.Add(dict);
-        Console.WriteLine();
+        
         var menuItemClose = new MenuItem { Header = "Закрыть словари" };
         YourMenu.Items.Add(menuItemClose);
         menuItemClose.Click += (sender, e) =>
@@ -71,7 +158,7 @@ public partial class MainWindow : Window
                 Termin.Text = selectedWord;
                 foreach (var dictionary in _dictionaries)
                 {
-                    var word = dictionary.FindTermDescription(selectedWord, "description.bin");
+                    var word = dictionary.FindTermDescription(selectedWord, $"{dictionary.Name}description.bin");
                     Console.WriteLine(word);
                     if (word != null)
                     {
@@ -90,9 +177,14 @@ public partial class MainWindow : Window
         {
             var term = Termin.Text;
             var description = Description.Text;
-            dict.AddTermLinkPair(term, description);
-            dict.SaveDescriptionToBinaryFile("description.bin", description+'#', dict.StringHashCode40(term));
-            dict.SaveToBinaryFile("terms.bin");
+            string name;
+            foreach (var dictionary in _dictionaries)
+            {
+                name = dictionary.Name;
+                dict.AddTermLinkPair(term, description);
+                dict.SaveDescriptionToBinaryFile($"{name}description.bin", description+'#', dict.StringHashCode40(term));
+                dict.SaveToBinaryFile($"{name}terms.bin");
+            }
             WordListBox.Items.Clear();
             UpdateList(dict);
         };

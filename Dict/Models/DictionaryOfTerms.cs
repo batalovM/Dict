@@ -62,7 +62,8 @@ class DictionaryOfTerms
             {
                 if (obj.Value.ToString() != "System.Collections.Hashtable")
                 {
-                    writer.Write(obj.Key.ToString());
+                    char[] s = (obj.Key.ToString()+' ').ToCharArray();
+                    writer.Write(s);
                 }
             }
             
