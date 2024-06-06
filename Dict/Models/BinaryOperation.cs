@@ -75,6 +75,15 @@ public class BinaryOperation
             
         }
     }
+    public void WriteWordsToBinaryFileWithClearing(string words, string fileName)
+    {
+        using (BinaryWriter writer = new BinaryWriter(File.Open(fileName, FileMode.Truncate)))
+        {
+            byte[] wordBytes = Encoding.UTF8.GetBytes(words); // Преобразование слова в байты с использованием UTF-8
+            writer.Write(wordBytes); // Запись самого слова в бинарном формате
+            
+        }
+    }
     public string[] ReadWordsFromBinaryFile(string filePath)
     {
         string[] words;
@@ -133,22 +142,20 @@ public class BinaryOperation
             data = new byte[fileStream.Length];
             fileStream.Read(data, 0, data.Length);
 
-            int i = seek+1;
-            while (i <= data.Length && data[i] != (byte)'#')
+            int i = seek;
+            if (data[i] == (byte)'\0')
+            {
+                return;
+            }
+            while (data[i] != (byte)'#')
             {
                 data[i] = (byte)'\0'; // Заменяем символы на '\0'
-                if (data[i] == (byte)'#')
-                {
-                    data[i] = (byte)'\0';
-                    break;
-                }
                 i++;
-                
             }
-
+            data[i] = (byte)'\0';
             // Перемещаем указатель в начало файла и записываем измененные данные
             fileStream.Seek(0, SeekOrigin.Begin);
-            fileStream.Write(data, 0, data.Length);
+            fileStream.Write(data, 0, data.Length); 
         }
         
     }

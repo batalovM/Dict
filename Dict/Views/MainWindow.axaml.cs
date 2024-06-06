@@ -73,8 +73,8 @@ public partial class MainWindow : Window
                     YourMenu.Header = selectedDictionary.Name;
                     Console.WriteLine($"{selectedDictionary.Name}");
                     UpdateList(dictionaryName);
-                    string[] terms = operation.ReadWordsFromBinaryFile("Фруктыterms.bin");
-                    string[] descriptions = operation.ReadWordsFromBinaryFileForDescription("Фруктыdescription.bin", terms);
+                    string[] terms = operation.ReadWordsFromBinaryFile($"{YourMenu.Header}terms.bin");
+                    string[] descriptions = operation.ReadWordsFromBinaryFileForDescription($"{YourMenu.Header}description.bin", terms);
                     
                 }
                 
@@ -171,6 +171,14 @@ public partial class MainWindow : Window
                 if (dictionary.Name == (string)YourMenu.Header)
                 {
                     operation.DeleteDescription($"{dictionary.Name}description.bin", dictionary.StringHashCode40(term));
+                    var termlist = operation.ReadWordsFromBinaryFile($"{dictionary.Name}description.bin");
+                    string[] news = termlist[0].Split('#');
+                    dictionary.Hashtable.Remove(term);
+                    operation.SaveToBinaryFile($"{dictionary.Name}terms.bin", dictionary.Hashtable);
+                    WordListBox.Items.Clear();
+                    Termin.Text = "";
+                    Description.Text = "";
+                    UpdateList(dictionary);
                 }
             }
 
