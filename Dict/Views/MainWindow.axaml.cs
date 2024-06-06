@@ -87,11 +87,23 @@ public partial class MainWindow : Window
     }
     public MainWindow()
     {
-        
         InitializeComponent();
         DictionaryOfTerms dict = new DictionaryOfTerms("Фрукты");
         string[] names = { dict.Name+'#' };
         WriteWordsToBinaryFile(names, "Словари.bin");
+        
+        search.Click += (sender, e) =>
+        {
+            var textForSearch = Termin.Text;
+            
+            if (textForSearch is not null)
+            {
+                if (YourMenu.Header != "Словари")
+                {
+                    Description.Text = dict.FindTermDescription(textForSearch, $"{YourMenu.Header}description.bin");
+                }
+            }
+        };
         // dict.AddTermLinkPair("яблоко", "яблоко1");
         // dict.AddTermLinkPair("банан", "банан2");
         // dict.AddTermLinkPair("апельсин", "апельсин3");
@@ -102,33 +114,39 @@ public partial class MainWindow : Window
         // dict.SaveDescriptionToBinaryFile($"{dict.Name}description.bin", "лимон2#", dict.StringHashCode40("лимон"));
         // dict.SaveToBinaryFile($"{dict.Name}terms.bin");
         // _dictionaries.Add(dict);
-        string[] terms = ReadWordsFromBinaryFile("Фруктыterms.bin");
-        string[] descriptions = ReadWordsFromBinaryFileForDescription("Фруктыdescription.bin", terms);
-        foreach (var VARIABLE in terms)
-        {
-            Console.Write($"{VARIABLE} ");
-        }
-        foreach (var VARIABLE in descriptions)
-        {
-            Console.Write($"{VARIABLE} " );
-        }
+        //////////////////
+        // foreach (var VARIABLE in terms)
+        // {
+        //     Console.Write($"{VARIABLE} ");
+        // }
+        // foreach (var VARIABLE in descriptions)
+        // {
+        //     Console.Write($"{VARIABLE} " );
+        // }
         _dictionaries.Add(dict);
-        
-        var menuItemClose = new MenuItem { Header = "Закрыть словари" };
+        var menuItemClose = new MenuItem { Header = "Закрыть словарь" };
         YourMenu.Items.Add(menuItemClose);
+        
         menuItemClose.Click += (sender, e) =>
         {
             WordListBox.Items.Clear();
             Termin.Text = "";
             Description.Text = "";
             Console.WriteLine("Словари закрыты");
+            YourMenu.Header = "Словари";
+        };
+        AddDict.Click += (sender, args) =>
+        {
+            var dialog = new AddDictionary();
+            dialog.Show();
         };
         FAQ.Click += (sender, e) =>
         {
             var dialog = new FAQ();
             dialog.Show();
         };
-        foreach (var dictionaryName in _dictionaries)
+        
+        foreach (var dictionaryName in _dictionaries)///// добавляем словари
         {
             var menuItem = new MenuItem { Header = dictionaryName.Name};
             //Добавляем обработчик события Click для каждого элемента
@@ -141,14 +159,19 @@ public partial class MainWindow : Window
                 // Проверить, что словарь найден
                 if (selectedDictionary != null)
                 {
-                    Title += $" {selectedDictionary.Name}";
+                    YourMenu.Header = selectedDictionary.Name;
                     Console.WriteLine($"{selectedDictionary.Name}");
                     UpdateList(dictionaryName);
+                    string[] terms = ReadWordsFromBinaryFile("Фруктыterms.bin");
+                    string[] descriptions = ReadWordsFromBinaryFileForDescription("Фруктыdescription.bin", terms);
+                    
                 }
+                
             };
             // Добавляем созданный MenuItem в ваше меню
             YourMenu.Items.Add(menuItem);
         }
+        
         WordListBox.SelectionChanged += (sender, e) =>
         {
             if (WordListBox.SelectedItem != null)
@@ -178,33 +201,49 @@ public partial class MainWindow : Window
             var term = Termin.Text;
             var description = Description.Text;
             string name;
-            foreach (var dictionary in _dictionaries)
+
+            if (YourMenu.Header != null && YourMenu.Name != "Словари")
             {
-                name = dictionary.Name;
-                dict.AddTermLinkPair(term, description);
-                dict.SaveDescriptionToBinaryFile($"{name}description.bin", description+'#', dict.StringHashCode40(term));
-                dict.SaveToBinaryFile($"{name}terms.bin");
+                foreach (var dictionary in _dictionaries)
+                {
+                    if (term != null && (description != null) && (dictionary.Name == (string)YourMenu.Header))
+                    {
+                        
+                        
+                        name = dictionary.Name;// string[] descriptions = ReadWordsFromBinaryFileForDescription("Фруктыdescription.bin", terms);
+                        dict.AddTermLinkPair(term, description);
+                        dict.SaveDescriptionToBinaryFile($"{name}description.bin", description+'#', dict.StringHashCode40(term));
+                        dict.SaveToBinaryFile($"{name}terms.bin");
+                    }
+                    else
+                    {
+                        Console.WriteLine("ПОля пустые");
+                        return;
+                    }
+                }
+                WordListBox.Items.Clear();
+                UpdateList(dict);
             }
-            WordListBox.Items.Clear();
-            UpdateList(dict);
         };
-        
-        
-        
     }
     private void UpdateList(DictionaryOfTerms dictionaryName)
     {
+        
         var selectedDictionary = _dictionaries.Find(d => d == dictionaryName);
+        string[] terms = ReadWordsFromBinaryFile($"{dictionaryName.Name}terms.bin");
+        foreach (var name in terms)
+        {
+            dictionaryName.UpdateHashTable(name, name+1);
+        }
         //Получить все слова из выбранного словаря
         var words = selectedDictionary.Hashtable.Keys;
-        foreach (var word in words)
-        {
-            if(selectedDictionary.Hashtable[word].ToString() != "System.Collections.Hashtable") Console.Write($"{word} ");
-        }
         // Добавить все слова в ListBox
         foreach (var word in words)
         {
-            if(selectedDictionary.Hashtable[word].ToString() != "System.Collections.Hashtable") WordListBox.Items.Add(word);
+            if (selectedDictionary.Hashtable[word].ToString() != "System.Collections.Hashtable" && selectedDictionary.Hashtable[word].ToString() != null )
+            {
+                WordListBox.Items.Add(word);
+            }
         }
     }
 }

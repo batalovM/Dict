@@ -1,0 +1,18 @@
+﻿<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="200" d:DesignHeight="200"
+        WindowStartupLocation="CenterScreen"
+        Width="200"
+        Height="200"
+        x:Class="Dict.Views.AddDictionary"
+        Title="AddDictionary">
+        <Grid Margin="5" RowDefinitions="*, *, *">
+                <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center"  Grid.Row="0">Введите название словаря</TextBlock>
+                <TextBox Name="textDict" VerticalAlignment="Center" HorizontalAlignment="Center" Width="150"  Grid.Row="1"></TextBox>
+                <Button Click="Button_OnClick" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Row="2"><TextBlock>Добавить</TextBlock></Button>
+        </Grid>
+        
+        
+</Window>

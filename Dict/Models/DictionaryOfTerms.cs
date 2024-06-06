@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Dict.Models;
 
-class DictionaryOfTerms
+public class DictionaryOfTerms
 {
     private string _name;
     public DictionaryOfTerms(string name)
@@ -16,19 +16,20 @@ class DictionaryOfTerms
     public string Name => _name;
     
     public Hashtable Hashtable = new(100);
+
+    public void UpdateHashTable(string term, string description)
+    {
+        if (Hashtable[term] == null)
+        {
+            Hashtable.Add(term, description);
+        }
+    }
     public void AddTermLinkPair(string term, string description)
     {
-        var hash = StringHashCode40(term);
-        if (hash < 0)
+        if (Hashtable[term] == null)
         {
-            hash += 100;
+            Hashtable.Add(term, description);
         }
-        
-        if (Hashtable[hash] == null)
-        {
-            Hashtable[hash] = new Hashtable();
-        }
-        Hashtable.Add(term, description);
     }
     public string FindTermDescription(string term, string filePath)
     {
