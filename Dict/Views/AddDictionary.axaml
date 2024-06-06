@@ -4,14 +4,15 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d" d:DesignWidth="200" d:DesignHeight="200"
         WindowStartupLocation="CenterScreen"
-        Width="200"
+        Width="250"
         Height="200"
         x:Class="Dict.Views.AddDictionary"
+        Icon="/Assets/free-icon-dictionary-7861765.png"
         Title="AddDictionary">
         <Grid Margin="5" RowDefinitions="*, *, *">
                 <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center"  Grid.Row="0">Введите название словаря</TextBlock>
                 <TextBox Name="textDict" VerticalAlignment="Center" HorizontalAlignment="Center" Width="150"  Grid.Row="1"></TextBox>
-                <Button Click="Button_OnClick" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Row="2"><TextBlock>Добавить</TextBlock></Button>
+                <Button Click="Button_OnClick" VerticalAlignment="Center" HorizontalAlignment="Center" Background="CornflowerBlue" Grid.Row="2"><TextBlock>Добавить</TextBlock></Button>
         </Grid>
         
         

@@ -33,12 +33,15 @@
             <Grid Grid.Column="1" ColumnDefinitions="*, *" Margin="5">
                 <TextBox Grid.Column="0" Name="Termin" Watermark="Термин" Width="150" HorizontalAlignment="Left" VerticalAlignment="Top"></TextBox>
                 <TextBox Grid.Column="0" Name="Description" TextWrapping="Wrap"  Watermark="Описание" Width="150" HorizontalAlignment="Left" Height="200" VerticalAlignment="Top" Margin="0,50,0,0"></TextBox>
-                <Button Name="search" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Top" Height="40"  Background="CornflowerBlue">
+                <Button Grid.Column="1" Name="RefreshButton" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,50,0,0" Height="40"  Background="CornflowerBlue">
+                    <Image  Source="../Assets/icons8-обновить-50.png"></Image>
+                </Button>
+                <Button Name="SearchTermin" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Top" Height="40"  Background="CornflowerBlue">
                     <Image  Source="../Assets/free-icon-search-4024513.png"></Image>
                 </Button>
                 <Button Grid.Column="1" Content="Добавить термин" Name="AddTerminButton" HorizontalAlignment="Right" VerticalAlignment="Top"  Background="CornflowerBlue"></Button>
                 <Button Grid.Column="1" Content="Удалить термин" Name="DeleteButton" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0, 50, 0, 0" Background="CornflowerBlue"/>
-                <Button Grid.Column="1" Content="Сохранить словарь" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0, 100, 0, 0" Background="CornflowerBlue"/>
+                <Button Grid.Column="1" Content="Сохранить словарь" Name = "SaveButton" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0, 100, 0, 0" Background="CornflowerBlue"/>
             </Grid>
         </Grid>
     </Grid>

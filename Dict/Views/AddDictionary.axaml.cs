@@ -14,24 +14,18 @@ public partial class AddDictionary : Window
 {
     public AddDictionary()
     {
-       
         InitializeComponent();
     }
 
-    private void Button_OnClick(object? sender, RoutedEventArgs e)
+    private void Button_OnClick(object? sender, RoutedEventArgs routedEventArgs)
     {
+        var operation = new BinaryOperation();
         if (textDict.Text is not null)
         {
-            WriteWordsToBinaryFile(textDict.Text+'#',"Словари.bin");
+            operation.WriteWordsToBinaryFile(textDict.Text+'#',"Словари.bin");
         }
-    }
-    static void WriteWordsToBinaryFile(string words, string fileName)
-    {
-        using (BinaryWriter writer = new BinaryWriter(File.Open(fileName, FileMode.Create)))
-        {
-            byte[] wordBytes = Encoding.UTF8.GetBytes(words); // Преобразование слова в байты с использованием UTF-8
-            writer.Write(wordBytes); // Запись самого слова в бинарном формате
-            
-        }
+        var wn = new MainWindow();
+        wn.Show();
+        Close();
     }
 }
